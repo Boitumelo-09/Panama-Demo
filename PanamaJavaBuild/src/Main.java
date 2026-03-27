@@ -1,6 +1,7 @@
 import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
 import static java.lang.IO.println;
+import static java.lang.IO.readln;
 
 public class Main {
     public static void main(String[] args) throws Throwable {
@@ -14,8 +15,7 @@ public class Main {
 
         MethodHandle square = linker.downcallHandle(
                 lib.find("square").get(),
-                FunctionDescriptor.of(ValueLayout.JAVA_INT,
-                        ValueLayout.JAVA_INT)
+                FunctionDescriptor.of(ValueLayout.JAVA_INT,ValueLayout.JAVA_INT)
         );
 
         int result = (int) square.invoke(10);
@@ -40,7 +40,17 @@ public class Main {
         );
         log.invoke();
 
+        MethodHandle logIn = linker.downcallHandle(
+                lib.find("logIn").get(),
+                FunctionDescriptor.ofVoid(ValueLayout.ADDRESS)
+        );
 
+        println("Name: "); String name = readln();
+        try (Arena arena = Arena.ofConfined()) {
 
+            MemorySegment memorySegment = arena.allocateFrom(name);
+
+            logIn.invoke(memorySegment);
+        }
     }
 }

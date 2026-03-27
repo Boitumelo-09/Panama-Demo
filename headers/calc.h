@@ -1,4 +1,5 @@
 int square(int x);
-void shout();
+void greet();
 void pizzaFromCpp();
 void logPro();
+void logIn(const char* name);

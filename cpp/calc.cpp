@@ -18,7 +18,13 @@ extern "C" {
         printf("Getting Logs Using C++... \n");
     }
    
-
-
+    __declspec(dllexport) void logIn(const char* name) {
+        if (name == nullptr) {
+            printf("Name is null bro...");
+            return;
+        }
+        printf("You Are Now Logging In As: %s\n", name);
+    }
+    
 }
 

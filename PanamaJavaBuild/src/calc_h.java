@@ -87,18 +87,18 @@ public class calc_h extends calc_h$shared {
     /**
      * Variadic invoker class for:
      * {@snippet lang=c :
-     * void shout()
+     * void greet()
      * }
      */
-    public static class shout {
+    public static class greet {
         private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.ofVoid(        );
-        private static final MemorySegment ADDR = SYMBOL_LOOKUP.findOrThrow("shout");
+        private static final MemorySegment ADDR = SYMBOL_LOOKUP.findOrThrow("greet");
 
         private final MethodHandle handle;
         private final FunctionDescriptor descriptor;
         private final MethodHandle spreader;
 
-        private shout(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
+        private greet(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
             this.handle = handle;
             this.descriptor = descriptor;
             this.spreader = spreader;
@@ -107,15 +107,15 @@ public class calc_h extends calc_h$shared {
         /**
          * Variadic invoker factory for:
          * {@snippet lang=c :
-         * void shout()
+         * void greet()
          * }
          */
-        public static shout makeInvoker(MemoryLayout... layouts) {
+        public static greet makeInvoker(MemoryLayout... layouts) {
             FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
             Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
             var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
             var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new shout(mh$, desc$, spreader$);
+            return new greet(mh$, desc$, spreader$);
         }
 
         /**
@@ -142,7 +142,7 @@ public class calc_h extends calc_h$shared {
         public void apply(Object... x0) {
             try {
                 if (TRACE_DOWNCALLS) {
-                    traceDowncall("shout", x0);
+                    traceDowncall("greet", x0);
                 }
                  spreader.invokeExact(x0);
             } catch(IllegalArgumentException | ClassCastException ex$)  {
@@ -219,6 +219,134 @@ public class calc_h extends calc_h$shared {
             } catch (Throwable ex$) {
                throw new AssertionError("should not reach here", ex$);
             }
+        }
+    }
+
+    /**
+     * Variadic invoker class for:
+     * {@snippet lang=c :
+     * void logPro()
+     * }
+     */
+    public static class logPro {
+        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.ofVoid(        );
+        private static final MemorySegment ADDR = SYMBOL_LOOKUP.findOrThrow("logPro");
+
+        private final MethodHandle handle;
+        private final FunctionDescriptor descriptor;
+        private final MethodHandle spreader;
+
+        private logPro(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
+            this.handle = handle;
+            this.descriptor = descriptor;
+            this.spreader = spreader;
+        }
+
+        /**
+         * Variadic invoker factory for:
+         * {@snippet lang=c :
+         * void logPro()
+         * }
+         */
+        public static logPro makeInvoker(MemoryLayout... layouts) {
+            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
+            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
+            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
+            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
+            return new logPro(mh$, desc$, spreader$);
+        }
+
+        /**
+         * {@return the address}
+         */
+        public static MemorySegment address() {
+            return ADDR;
+        }
+
+        /**
+         * {@return the specialized method handle}
+         */
+        public MethodHandle handle() {
+            return handle;
+        }
+
+        /**
+         * {@return the specialized descriptor}
+         */
+        public FunctionDescriptor descriptor() {
+            return descriptor;
+        }
+
+        public void apply(Object... x0) {
+            try {
+                if (TRACE_DOWNCALLS) {
+                    traceDowncall("logPro", x0);
+                }
+                 spreader.invokeExact(x0);
+            } catch(IllegalArgumentException | ClassCastException ex$)  {
+                throw ex$; // rethrow IAE from passing wrong number/type of args
+            } catch (Throwable ex$) {
+               throw new AssertionError("should not reach here", ex$);
+            }
+        }
+    }
+
+    private static class logIn {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            calc_h.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = SYMBOL_LOOKUP.findOrThrow("logIn");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void logIn(const char *name)
+     * }
+     */
+    public static FunctionDescriptor logIn$descriptor() {
+        return logIn.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void logIn(const char *name)
+     * }
+     */
+    public static MethodHandle logIn$handle() {
+        return logIn.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void logIn(const char *name)
+     * }
+     */
+    public static MemorySegment logIn$address() {
+        return logIn.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void logIn(const char *name)
+     * }
+     */
+    public static void logIn(MemorySegment name) {
+        var mh$ = logIn.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("logIn", name);
+            }
+            mh$.invokeExact(name);
+        } catch (Error | RuntimeException ex) {
+           throw ex;
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
         }
     }
 }
